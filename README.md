@@ -1,123 +1,139 @@
 # The-existing-EEG-Foundation-Pretrained-Model
 
-A curated list of existing **EEG foundation / large pretrained models**, including paper links, descriptions, and open-source repositories when available.
+A curated list of **existing EEG(-related) foundation / pretrained models and benchmarks**, including:
+
+- EEG-only self-supervised / foundation models
+- Multimodal / LLM-style models bridging EEG with text / vision
+- Benchmarks and toolkits for evaluating EEG foundation models
+- Broader brain-signal foundation models and closely related work
+
+> 🍊 Scope: “Foundation / pretrained model” here means models trained on relatively **large, diverse EEG or neural datasets** with the explicit goal of re-use across tasks / datasets, not small task-specific CNNs.
 
 ---
 
-## Motivation
+## 0. Legend
 
-Recent years have seen the emergence of **EEG foundation models (EEG-FMs)** and large pretrained EEG models, inspired by the success of foundation models in NLP and CV. These models are typically:
-
-- trained in a **self-supervised or multi-task** manner on **large-scale EEG datasets**,  
-- designed to provide **general-purpose, reusable EEG representations** across datasets and tasks,  
-- sometimes integrated with language models or multi-modal architectures.
-
-This repository collects existing EEG foundation models with:
-
-- Model name & year  
-- Paper link  
-- Code repository  
-- Brief technical notes  
+- **Modality**
+  - EEG: scalp EEG
+  - iEEG / ECoG: invasive recordings
+  - Neuro-signal: EEG + other electrophysiology (ECoG, LFP, etc.)
+- **Code**
+  - 🔨 Official repo
+  - 🔧 Unofficial / third-party or “planned”
+  - ⏳ Announced but not released yet
 
 ---
 
-## Inclusion Criteria
+## 1. EEG-only foundation / representation models
 
-A model is included if:
+### 1.1 General-purpose EEG foundation models
 
-1. It has a peer-reviewed paper or arXiv preprint, and  
-2. It is explicitly positioned as an EEG/brain foundation model **or**  
-3. It is a large-scale self-supervised EEG model intended for broad transfer  
-4. Code availability is preferred but not required  
-
-Models are grouped into:
-
-- EEG-only foundation models  
-- Multi-modal / brain-signal foundation models including EEG  
-- EEG-language / instruction models  
-- Benchmarks and toolkits  
-- Important legacy self-supervised models  
+| Year | Model | Paper | Code | Modality | Pretraining data (rough) | Highlights |
+|------|-------|-------|------|----------|---------------------------|------------|
+| 2021 | BENDR | [BENDR: Using Transformers and a Contrastive Self-Supervised Learning Task to Learn From Massive Amounts of EEG Data](https://arxiv.org/abs/2101.12037) | ✅ [SPOClab-ca/BENDR](https://github.com/SPOClab-ca/BENDR) | EEG | ~20k+ hours clinical EEG (Temple U. etc.) | Early **BERT-style** contrastive pretraining on raw EEG; demonstrates cross-dataset transfer (sleep, pathology etc.). |
+| 2024 | EEGFormer | [EEGFormer: Towards Transferable and Interpretable Large-Scale EEG Foundation Model](https://arxiv.org/abs/2401.10278) | 🔧 (paper only) | EEG | Large-scale “compound” EEG from multiple datasets | Transformer EEG FM; pretraining on mixed tasks; emphasizes **interpretability** of learned patterns and transfer to anomaly detection, classification. |
+| 2024 | LaBraM | [Large Brain Model for Learning Generic Representations with Tremendous EEG Data in BCI](https://arxiv.org/abs/2405.18765) | ✅ [935963004/LaBraM](https://github.com/935963004/LaBraM) | EEG | ~2,500 h, ~20 datasets | BEiT-style tokenizer + masked prediction on **EEG patches**; strong cross-dataset EEG FM; widely adopted (also in TorchEEG / Braindecode). |
+| 2024 | Neuro-GPT | [Neuro-GPT: Towards A Foundation Model for EEG](https://arxiv.org/abs/2311.03764) | ✅ [wenhui0206/NeuroGPT](https://github.com/wenhui0206/NeuroGPT) | EEG | Large mixed EEG corpus (BCI / physionet etc.) | Encoder + GPT-style decoder; masked reconstruction pretraining; early use of **GPT-like decoder** for EEG. |
+| 2024 | EEGPT (universal representation) | [EEGPT: Pretrained Transformer for Universal and Reliable Representation of EEG Signals](https://papers.nips.cc/paper_files/paper/2024/file/4540d267eeec4e5dbd9dae9448f0b739-Paper-Conference.pdf) | ✅ [BINE022/EEGPT](https://github.com/BINE022/EEGPT) | EEG | 10k+ hours from multiple datasets | NeurIPS 2024. Large transformer FM with unified preprocessing; strong baselines across many EEG tasks and datasets. |
+| 2024 | EEGPT (generalist FM) | [EEGPT: Unleashing the Potential of EEG Generalist Foundation Model by Autoregressive Pre-training](https://arxiv.org/abs/2410.19779) | 🔧 (code promised) | EEG | 37.5M samples, up to 138 electrodes | **Autoregressive** generalist FM; electrode-wise modeling; multi-task transfer with shared electrode graph network. |
+| 2024 | GEFM | [GEFM: Graph-Enhanced EEG Foundation Model](https://arxiv.org/abs/2411.19507) | 🔧 (paper only) | EEG | Multi-dataset EEG (hours not explicitly stated) | Combines **GNN + masked autoencoder** to explicitly model inter-channel topology plus temporal dynamics. |
+| 2025 | ALFEE | [ALFEE: Adaptive Large Foundation Model for EEG Representation](https://arxiv.org/abs/2505.06291) | ✅ [xw1216/ALFEE](https://github.com/xw1216/ALFEE) | EEG | 25,000+ hours, 6 downstream tasks | Hybrid transformer with **channel encoder + temporal encoder + hybrid decoder**; multi-objective pretraining (masking, forecasting) for robust cross-paradigm generalization. |
+| 2025 | CBraMod | [CBraMod: A Criss-Cross Brain Foundation Model for EEG Decoding](https://arxiv.org/abs/2412.07236) | ✅ [wjq-learning/CBraMod](https://github.com/wjq-learning/CBraMod) | EEG | Large multi-dataset EEG corpus (12 public datasets) | **Criss-cross transformer** that separately models spatial / temporal attention; strong SOTA on 10+ BCI tasks. |
+| 2025 | EEGMamba | [EEGMamba: An EEG Foundation Model with Mamba](https://doi.org/10.1016/j.neunet.2025.107816) | ✅ [wjq-learning/EEGMamba](https://github.com/wjq-learning/EEGMamba) | EEG | Same / extended corpora as CBraMod | Replaces transformer with **Mamba (state space model)** backbone; more efficient sequence modeling with competitive / better performance. |
+| 2025 | MIRepNet | [MIRepNet: A Pipeline and Foundation Model for EEG-Based Motor Imagery Classification](https://arxiv.org/abs/2507.20254) | ✅ [staraink/MIRepNet](https://github.com/staraink/MIRepNet) | EEG | 5 public MI datasets | First **paradigm-specific** FM (motor imagery only); neurophysiology-informed channel template + hybrid supervised/self-supervised pretraining. |
+| 2025 | EEGDM | [EEGDM: Learning EEG Representation with Latent Diffusion Model](https://arxiv.org/abs/2508.20705) | 🔧 (paper only) | EEG | Moderate-scale multi-dataset EEG | Uses **latent diffusion** as self-supervised objective: EEG encoder produces latent used to condition diffusion generator; latent also used for downstream tasks. |
+| 2025 | Uni-NTFM | [Uni-NTFM: A Unified Foundation Model for EEG Signal Representation Learning](https://arxiv.org/abs/2509.24222) | 🔧 (paper only) | EEG | 28,000+ hours | Neuroscience-inspired **time / freq / raw decoupled encoders**, topological embeddings for 10–20 standards, and Mixture-of-Experts transformer; very large (up to 1.9B params). |
+| 2025 | LCM | [Large Cognition Model: Towards Pretrained EEG Foundation Model](https://arxiv.org/abs/2502.17464) | 🔧 (paper only) | EEG | Large-scale EEG, details in paper | Transformer EEG FM with temporal+spectral attention; emphasizes cross-task generalization (cognitive state, disease, neurofeedback). |
+| 2025 | EEG-DINO (name varies) | [EEG-DINO: Learning EEG Foundation Models via Hierarchical Self-Distillation](https://www.researchgate.net/publication/395706635_EEG-DINO_Learning_EEG_Foundation_Models_via_Hierarchical_Self-distillation) | 🔧 (paper only) | EEG | Multi-dataset EEG | DINO-style self-distillation adapted to EEG; highlights importance of multiscale spatio-temporal features and multi-task training. |
 
 ---
 
-## EEG Foundation Models (EEG-only)
+### 1.2 Broader “EEG foundation” / analysis papers
 
-| Model | Year | Paper | Code | Notes |
+These are not single reusable checkpoints but analyze properties of EEG FMs or propose training pipelines.
+
+| Year | Work | Paper | Code | Notes |
 |------|------|-------|------|-------|
-| **BENDR** | 2021 | “BENDR: Using Transformers and a Contrastive Self-Supervised Learning Task to Learn From Massive Amounts of EEG Data” | https://github.com/SPOClab-ca/BENDR | Early transformer-based SSL model for EEG; cross-dataset generalization. |
-| **EEGFormer** | 2024 | “EEGFormer: Towards Transferable and Interpretable Large-Scale EEG Foundation Model” | N/A | VQ-transformer trained on large-scale EEG via masked reconstruction. |
-| **LaBraM** | 2024 | “Large Brain Model for Learning Generic Representations with Tremendous EEG Data in BCI” | https://github.com/935963004/LaBraM | Large-scale EEG FM with VQ tokenizer + masked code prediction. |
-| **NeuroGPT** | 2024 | “Neuro-GPT: Towards A Foundation Model for EEG” | https://github.com/wenhui0206/NeuroGPT | EEG encoder + GPT-style decoder for masked reconstruction. |
-| **EEGPT (NeurIPS 2024)** | 2024 | “EEGPT: Pretrained Transformer for Universal and Reliable Representation of EEG Signals” | https://github.com/BINE022/EEGPT | Dual masked SSL objective for robust universal representation. |
-| **EEGPT (Generalist FM)** | 2024 | “EEGPT: Unleashing the Potential of EEG Generalist Foundation Model by Autoregressive Pre-training” | Partially available | Up to 1.1B parameters; autoregressive pretraining; electrode-wise modeling. |
-| **ALFEE** | 2025 | “ALFEE: Adaptive Large Foundation Model for EEG Representation” | https://github.com/xw1216/ALFEE | Multi-task pretraining with temporal and channel encoders. |
-| **CBraMod** | 2025 | “CBraMod: A Criss-Cross Brain Foundation Model for EEG Decoding” | https://github.com/wjq-learning/CBraMod | Criss-cross transformer with spatial/temporal attention branches. |
-| **EEGMamba** | 2025 | “EEGMamba: An EEG foundation model with Mamba” | https://github.com/wjq-learning/EEGMamba | State-space model (Mamba) for long-sequence EEG modeling. |
-| **GEFM** | 2024–2025 | “GEFM: Graph-Enhanced EEG Foundation Model” | N/A | Integrates GNN electrode topology with transformer MAE. |
-| **MIRepNet** | 2025 | “MIRepNet: A Pipeline and Foundation Model for EEG-Based Motor Imagery Classification” | https://github.com/staraink/MIRepNet | MI-specific EEG FM with neuro-inspired preprocessing pipeline. |
-| **Uni-NTFM** | 2025 | “Uni-NTFM: A Unified Foundation Model for EEG Signal Representation Learning” | N/A | Up to 1.9B parameters; Mixture-of-Experts with time/frequency/raw streams. |
-| **EEGDM** | 2025 | “EEGDM: Learning EEG Representation with Latent Diffusion Model” | N/A | Diffusion-based self-supervised EEG representation learning. |
+| 2025 | EEG FM for BCI diversity | [EEG Foundation Models for BCI Learn Diverse Features of Electrophysiology](https://arxiv.org/abs/2506.01867) | 🔧 (paper; implementation details in text) | Analyzes self-supervised transformer FMs (HuBERT-style) for BCI; shows models capture alpha rhythms, subject identity, etc., beyond classic task labels. |
 
 ---
 
-## Multi-modal Brain-Signal Foundation Models (Including EEG)
+## 2. Multimodal / LLM-style EEG models
 
-| Model | Year | Modalities | Paper | Code | Notes |
-|-------|------|-----------|--------|-------|-------|
-| **BrainWave / Brant-2** | 2024–2025 | EEG, iEEG, others | “BrainWave: A Brain Signal Foundation Model for Clinical Applications” | https://github.com/yzz673/Brant-2 | Large clinical-scale brain-signal FM (~40,000 hours). |
-| **BrainBERT** | 2023 | iEEG | “BrainBERT: Self-Supervised Representation Learning for Intracranial Recordings” | Varies | Transformer SSL model for iEEG. |
-| **NDL-Brain** | 2024 | EEG, MEG | “Nested Deep Learning Model Towards A Foundation Model for Brain Signal Data” | N/A | Nested architecture across EEG/MEG tasks. |
-| **Large Brainwave FMs (Survey)** | 2025 | EEG + others | Review paper | — | Survey and evaluation of brainwave foundation models. |
+### 2.1 EEG + language / instruction-following
 
----
-
-## EEG-Language and Instruction Models
-
-| Model | Year | Paper | Code | Notes |
-|-------|------|-------|------|-------|
-| **NeuroLM** | 2024–2025 | “NeuroLM: A Universal Multi-task Foundation Model for Bridging Language and EEG Signals” | https://github.com/935963004/NeuroLM | EEG tokenization + LLM instruction tuning. |
-| **EEG-GPT** | 2024 | “EEG-GPT: Exploring Capabilities of Large Language Models for EEG Classification and Interpretation” | Various repos | LLM-driven EEG classification and explanation. |
-| **Neurosity EEG-GPT** | 2024 | Product-oriented EEG-LM | https://github.com/neurosity/EEG-GPT | Real-time EEG model for commercial headset. |
-| **Large Cognition Model (LCM)** | 2025 | “Large Cognition Model: Towards Pretrained EEG Foundation Model” | Integrated in EEG-FM-Bench | FM with temporal + spectral attention. |
-| **WaveMind** | 2025 | “WaveMind: Towards a Conversational EEG Foundation Model” | https://github.com/ZiyiTsang/WaveMind | Instruction-following conversational EEG FM. |
+| Year | Model | Paper | Code | Modality | Highlights |
+|------|-------|-------|------|----------|------------|
+| 2024 | EEG-GPT (Kim et al.) | [EEG-GPT: Exploring Capabilities of Large Language Models for EEG Classification and Interpretation](https://arxiv.org/abs/2401.18006) | 🔧 (no official repo) | EEG + LLM tools | Uses an LLM as a **controller** over traditional EEG tools; few-shot abnormal vs normal classification with explicit chain-of-thought interpretations. |
+| 2024 | NeuroLM | [NeuroLM: A Universal Multi-task Foundation Model for Bridging the Gap between Language and EEG Signals](https://arxiv.org/abs/2409.00101) | ✅ [935963004/NeuroLM](https://github.com/935963004/NeuroLM) | EEG + text | Treats EEG as a “foreign language” via discrete neural tokens; **LLM backbone** supports instruction-tuned multi-task EEG decoding, report generation, etc. |
+| 2025 | WaveMind | [WaveMind: Towards a Conversational EEG Foundation Model Aligned to Textual and Visual Modalities](https://arxiv.org/abs/2510.00032) | 🔧 (paper only) | EEG + text + vision | MLLM-style conversational model; aligns EEG with text / images; introduces **WaveMind-Instruct-338k** for instruction tuning across tasks. |
+| 2025 | Neurosity EEG-GPT | (no formal paper; project repo) | ⛏️ [neurosity/EEG-GPT](https://github.com/neurosity/EEG-GPT) | EEG (Neurosity Crown) | Practical project to build a foundation model for Crown device data based on **Neuro-GPT**; currently under active development. |
 
 ---
 
-## Benchmarks & Toolkits
+### 2.2 Clinical & cross-modality brain-signal FMs
 
-| Name | Year | Link | Purpose |
-|------|------|------|---------|
-| **EEG-FM-Bench** | 2025 | https://github.com/xw1216/EEG-FM-Bench | Benchmark suite for EEG foundation models. |
-| **EEG-Bench** | 2024–2025 | https://github.com/ETH-DISCO/EEG-Bench | Large-scale EEG benchmark covering 25 datasets. |
-
----
-
-## Legacy Large-Scale EEG Self-Supervised Models
-
-| Model | Year | Paper | Code | Notes |
-|-------|------|-------|------|-------|
-| **BENDR** | 2021 | (See above) | https://github.com/SPOClab-ca/BENDR | Proto-foundation SSL model. |
-| **EEGMirror** | 2025 | “EEGMirror: Leveraging EEG Data in the Wild via Montage-Agnostic Self-Supervision” | N/A | Robust montage-agnostic SSL. |
-| **EEGDM** | 2025 | (See above) | — | Diffusion-based SSL for EEG. |
+| Year | Model | Paper | Code | Modality | Highlights |
+|------|-------|-------|------|----------|------------|
+| 2023 | BrainBERT | [BrainBERT: Self-Supervised Representation Learning for Intracranial Recordings](https://arxiv.org/abs/2302.14367) | 🔧 [lab/BrainBERT2023 (resources page)](https://klab.tch.harvard.edu/resources/BrainBERT2023.html) | iEEG / ECoG | ICLR 2023. Transformer FM for intracranial signals; masked spectrogram modeling; strong cross-subject and cross-task generalization. |
+| 2024 | BrainWave / Brant-2 | [BrainWave: A Brain Signal Foundation Model for Clinical Applications](https://arxiv.org/abs/2402.10251) | ✅ [yzz673/Brant-2](https://github.com/yzz673/Brant-2) | EEG + invasive clinical recordings | 40,000+ hours, 16k subjects; large FM across EEG + other electrophysiology for clinical diagnosis / disorder classification. |
+| 2024 | NDL-Brain | [Nested Deep Learning Model Towards A Foundation Model for Brain Signal Data](https://arxiv.org/abs/2410.03191) | 🔧 (paper + references) | EEG + MEG | “Nested” architecture that can adapt to varying channel layouts; focuses on spike detection and channel localization (epilepsy). |
 
 ---
 
-## Contributing
+### 2.3 EEG → vision / generative decoding
 
-Pull requests are welcome for:
-
-- Missing models  
-- Additional datasets, details, or parameter counts  
-- Corrections and reorganizations  
+| Year | Model | Paper | Code | Modality | Highlights |
+|------|-------|-------|------|----------|------------|
+| 2025 | EEGMirror | [EEGMirror: Leveraging EEG Data in the Wild via Montage-Agnostic Self-Supervision for EEG to Video Decoding](https://openaccess.thecvf.com/content/ICCV2025/papers/Liu_EEGMirror_Leveraging_EEG_Data_in_the_Wild_via_Montage-Agnostic_Self-Supervision_ICCV_2025_paper.pdf) | 🔧 (paper; possibly code later) | EEG → Video | ICCV 2025. Montage-agnostic pipeline that learns from wild EEG data to decode **high-fidelity video**; uses self-supervised EEG pretraining. |
 
 ---
 
-## Citation
+## 3. Benchmarks & toolkits for EEG foundation models
+
+These are essential for fairly comparing EEG FMs.
+
+| Year | Name | Paper | Code | Scope | Notes |
+|------|------|-------|------|-------|------|
+| 2025 | EEG-FM-Bench | [EEG-FM-Bench: A Comprehensive Benchmark for the Systematic Evaluation of EEG Foundation Models](https://arxiv.org/abs/2508.17742) | ✅ [xw1216/EEG-FM-Bench](https://github.com/xw1216/EEG-FM-Bench) | 14 datasets, 10 paradigms | First comprehensive FM-centric benchmark; defines protocols for **frozen / full fine-tuning / multitask** evaluation across motor imagery, sleep, emotion, seizure, AD, etc. |
+| 2025 | EEG-Bench | [EEG-Bench: A Benchmark for EEG Foundation Models in Clinical Applications](https://openreview.net/forum?id=MAudehqShe) | ✅ (link in OpenReview; ETH Zürich group) | Clinical EEG | Focuses on **clinical tasks** (diagnosis, pathology) and compares FMs vs classical baselines; designed for ease-of-use and automated dataset download. |
+
+---
+
+## 4. How to extend this repo
+
+### 4.1 Adding a new model
+
+Please open a PR that adds a new row to the appropriate table with:
+
+- **Year** of first public preprint or publication  
+- **Model** name (short, consistent with paper / repo)  
+- **Paper**: a Markdown link to arXiv / conference / journal  
+- **Code**: GitHub or other public repo  
+- **Modality**: `EEG`, `iEEG`, `EEG + text`, `EEG + vision`, etc.  
+- **Pretraining data**: rough hours and number of datasets (if reported)  
+- **Highlights**: one short sentence on what’s unique (architecture, objective, dataset scale, etc.)
+
+### 4.2 Inclusion criteria
+
+A work is “in scope” if:
+
+1. It pretrains on **multiple EEG/brain-signal datasets** or on a large, diverse single dataset with explicit re-use across tasks; **and/or**  
+2. It explicitly positions itself as a **foundation / generalist / universal / large** model for EEG / brain signals; **or**  
+3. It defines a **benchmark** specifically aimed at evaluating such models.
+
+Small task-specific CNNs / RNNs trained from scratch on a single dataset are out of scope.
+
+---
+
+## 5. Citation
+
+If this repo helps your research, you can cite it as:
 
 ```bibtex
-@misc{EEGFoundationModelList,
-  title  = {The-existing-EEG-Foundation-Pretrained-Model: A curated list of EEG foundation and large pretrained models},
-  author = {Community contributors},
-  year   = {2025},
-  note   = {GitHub repository},
+@misc{the_existing_eeg_fm_repo,
+  title        = {The-existing-EEG-Foundation-Pretrained-Model},
+  author       = {Maintainers of the GitHub repository},
+  year         = {2025},
+  howpublished = {\url{https://github.com/<your-username>/The-existing-EEG-Foundation-Pretrained-Model}}
 }
