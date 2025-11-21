@@ -1,5 +1,3 @@
-# The-existing-EEG-Foundation-Pretrained-Model
-
 A curated list of **existing EEG(-related) foundation / pretrained models and benchmarks**, including:
 
 - EEG-only self-supervised / foundation models
