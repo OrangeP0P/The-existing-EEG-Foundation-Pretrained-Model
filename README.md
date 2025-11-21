@@ -1,7 +1,5 @@
 # The-existing-EEG-Foundation-Pretrained-Model
 
-# The-existing-EEG-Foundation-Pretrained-Model
-
 > A curated list of **existing EEG foundation / large pretrained models** – including paper links, short descriptions, and open-source repositories when available.  
 
 ---
@@ -11,7 +9,7 @@
 In the last few years, **EEG foundation models (EEG-FMs)** and large pretrained EEG models have started to appear, inspired by large language and vision models. They usually:
 
 - are trained in a **self-supervised or multi-task** way on **large-scale EEG (or brain-signal) data**,  
-- aim to provide **general, reusable representations** across datasets, paradigms and tasks,  
+- aim to provide **general, reusable representations** across datasets, paradigms, and tasks,  
 - are often described in papers as “foundation model”, “large EEG model”, “universal EEG representation”, etc.
 
 This repo tries to **collect existing models that fit this spirit**, with:
@@ -40,7 +38,7 @@ We group models into:
 - General **EEG foundation models**
 - **Multi-modal / brain-signal** foundation models that include EEG
 - **EEG-language & instruction-following** models
-- **Benchmarks / toolkits**
+- **Benchmarks/toolkits**
 - Earlier important **self-supervised EEG representation models**
 
 ---
@@ -51,7 +49,7 @@ Models in this section mainly target **scalp EEG** and aim at general-purpose fe
 
 | Model | Year | Paper | Code | Short notes |
 |------|------|-------|------|-------------|
-| **BENDR** (BErt-like Neurophysiological Data Representation) | 2021 | “BENDR: Using Transformers and a Contrastive Self-Supervised Learning Task to Learn From Massive Amounts of EEG Data” (Frontiers in Human Neuroscience) :contentReference[oaicite:0]{index=0} | https://github.com/SPOClab-ca/BENDR :contentReference[oaicite:1]{index=1} | Early large-scale **SSL transformer** for raw EEG. Pretrained contrastively on diverse corpora; shows a **single pretrained model** can transfer to many BCI/sleep tasks. Often regarded as a proto-“EEG foundation model”. |
+| **BENDR** (BErt-like Neurophysiological Data Representation) | 2021 | “BENDR: Using Transformers and a Contrastive Self-Supervised Learning Task to Learn From Massive Amounts of EEG Data” (Frontiers in Human Neuroscience): contentReference[oaicite:0]{index=0} | https://github.com/SPOClab-ca/BENDR :contentReference[oaicite:1]{index=1} | Early large-scale **SSL transformer** for raw EEG. Pretrained contrastively on diverse corpora; shows a **single pretrained model** can transfer to many BCI/sleep tasks. Often regarded as a proto-“EEG foundation model”. |
 | **EEGFormer** | 2024 | “EEGFormer: Towards Transferable and Interpretable Large-Scale EEG Foundation Model” (AAAI Clinical Foundation Models Symposium / arXiv:2401.10278) :contentReference[oaicite:2]{index=2} | No official code at time of writing (used as baseline in later works). | **Vector-quantized transformer** foundation model, pretrained on large-scale TUH EEG via masked reconstruction; aims for **transferable & interpretable** EEG tokens. |
 | **LaBraM** (Large Brain Model) | 2024 | “Large Brain Model for Learning Generic Representations with Tremendous EEG Data in BCI” (ICLR 2024): contentReference[oaicite:3]{index=3} | https://github.com/935963004/LaBraM :contentReference[oaicite:4]{index=4} | Unified **EEG foundation model**, ~2,500 hours of EEG across ~20 datasets. Uses **VQ neural tokenizer + masked code prediction** on EEG patches; strong cross-dataset performance (abnormal detection, emotion, gait, etc.). |
 | **NeuroGPT** | 2024 | “Neuro-GPT: Towards A Foundation Model for EEG” (ISBI / arXiv:2311.03764): contentReference[oaicite:5]{index=5} | https://github.com/wenhui0206/NeuroGPT: contentReference[oaicite:6]{index=6} | Foundation model with **EEG encoder + GPT decoder**, trained to reconstruct **masked EEG segments** on large TUH-style corpora and fine-tuned on motor imagery. |
